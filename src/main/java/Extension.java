@@ -57,8 +57,11 @@ class MyContextMenuItemsProvider implements ContextMenuItemsProvider {
                     List<ProxyHttpRequestResponse> proxy_history = api.proxy().history();
 
                     for (ProxyHttpRequestResponse requestResponse : proxy_history) {
-                        String request = requestResponse.finalRequest().toString();
-                        String response = requestResponse.response().toString();
+                        String requestRaw = requestResponse.finalRequest().toString();
+                        String responseRaw = requestResponse.response().toString();
+
+                        String request = trimToMaxLines(requestRaw, 60);
+                        String response = trimToMaxLines(responseRaw, 60);
 
                         writer.write("---Request---\n");
                         writer.write(request);
@@ -79,6 +82,28 @@ class MyContextMenuItemsProvider implements ContextMenuItemsProvider {
         return List.of(menuItem);
     }
     
+    // keep at most maxLines lines; if truncated, final line notes how many lines were truncated.
+    private static String trimToMaxLines(String s, int maxLines) {
+        if (s == null || maxLines <= 0) {
+            return "";
+        }
+        String[] lines = s.split("\r\n|\r|\n", -1);
+        if (lines.length <= maxLines) {
+            return s;
+        }
+        int keep = Math.max(1, maxLines - 1); // reserve 1 line for truncation note
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < keep; i++) {
+            sb.append(lines[i]);
+            if (i < keep - 1) {
+                sb.append("\n");
+            }
+        }
+        int truncated = lines.length - keep;
+        sb.append("\n").append("... (truncated ").append(truncated).append(" lines)");
+        return sb.toString();
+    }
+
     private static String randomSuffix(int length) {
         final String letters = "abcdefghijklmnopqrstuvwxyz";
         StringBuilder sb = new StringBuilder(length);
