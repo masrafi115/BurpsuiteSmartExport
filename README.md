@@ -1,84 +1,95 @@
-# Extension Template Project
+# BurpSuiteSmartExport
 
-This project was created by PortSwigger to help you quickly start developing extensions in Java.
+A one-click Burp Suite extension (Java) that exports all HTTP history to a formatted text file so that it could be passed to a LLM.
 
-## Contents
-* [Before you start](#before-you-start)
-* [Writing your extension](#writing-your-extension)
-* [Building your extension](#building-your-extension)
-* [Loading the JAR file into Burp](#loading-the-jar-file-into-burp)
-* [Sharing your extension](#sharing-your-extension)
+---
 
+## Requirements
 
-## Before you start
+* Java (JDK) installed (compatible with your Gradle toolchain)
+* Burp Suite (Community or Professional)
 
-Before you begin development, make sure that your project's JDK is set to version "21".
+---
 
+## Installation
 
-## Writing your extension
+1. Clone this repository:
 
-To begin development, open the [Extension.java](src/main/java/Extension.java) file. It includes an example of setting your extension's name, which you can customize with your own logic.
+```bash
+git clone https://github.com/ojasmaheshwari/BurpsuiteSmartExport.git
+cd BurpsuiteSmartExport
+```
 
-The template contains the following components for building your extension:
+2. Build the JAR using the included Gradle wrapper:
 
-* The `initialize` method. This is the entry point for your extension. It is called when the extension is loaded and receives a [montoyaApi](https://portswigger.github.io/burp-extensions-montoya-api/javadoc/burp/api/montoya/MontoyaApi.html) argument, which provides access to all Montoya API features.
-* The `Extension` class. This implements the BurpExtension interface, so your extension is recognized and loaded by Burp.
+* On UNIX-based systems (Linux, macOS):
 
-For more information on Montoya API features, see the [JavaDoc](https://portswigger.github.io/burp-extensions-montoya-api/javadoc/burp/api/montoya/MontoyaApi.html).
+```bash
+./gradlew jar
+```
 
-To explore example extensions, visit our [GitHub repository](https://github.com/PortSwigger/burp-extensions-montoya-api-examples).
+* On Windows:
 
-For more information on creating extensions, see our [documentation](https://portswigger.net/burp/documentation/desktop/extend-burp/extensions/creating).
+```powershell
+gradlew jar
+```
 
-If you have any questions or need help from the community, join our [Discord channel](https://discord.com/channels/1159124119074381945/1164175825474686996).
+3. After the build completes you'll find a `.jar` in `build/libs/`.
 
+---
 
-## Building your extension
+## Load the extension into Burp Suite
 
-When you're ready to test and use your extension, follow these steps to build a JAR file and load it into Burp.
+1. Open Burp Suite.
+2. Go to **Extensions** → **Add**.
+3. For **Extension type**, choose **Java**.
+4. Select the generated `.jar` file from `build/libs/` and click **Next**.
+5. The extension should load and appear in the Extensions list.
 
-### Building the JAR file
+---
 
-To build the JAR file, run the following command in the root directory of this project:
+## How to use
 
-* For UNIX-based systems: `./gradlew jar`
-* For Windows systems: `gradlew jar`
+1. In Burp's **Proxy** tab, right-click any request in the HTTP history list.
+2. From the context menu choose **Extensions** → **Smart Export** → **Save .txt**.
+3. The full text file will be written to one of the following locations (the folder is created if it does not exist):
 
-If successful, the JAR file is saved to `<project_root_directory>/build/libs/<project_name>.jar`. If the build fails, errors are shown in the console. By default, the project name is `extension-template-project`. You can change this in the [settings.gradle.kts](./settings.gradle.kts) file.
+* **Windows:**
 
+```
+C:\Users\<you>\BurpSmartSearch\full_history_<random>.txt
+```
 
-## Loading the JAR file into Burp
+* **Linux / macOS:**
 
-To load the JAR file into Burp:
+```
+~/BurpSmartSearch/full_history_<random>.txt
+```
 
-1. In Burp, go to **Extensions > Installed**.
-2. Click **Add**.
-3. Under **Extension details**, click **Select file**.
-4. Select the JAR file you just built, then click **Open**.
-5. [Optional] Under **Standard output** and **Standard error**, choose where to save output and error messages.
-6. Click **Next**. The extension is loaded into Burp.
-7. Review any messages displayed in the **Output** and **Errors** tabs.
-8. Click **Close**.
+The `<random>` suffix is added to avoid overwriting previous exports.
 
-Your extension is loaded and listed in the **Burp extensions** table. You can test its behavior and make changes to the code as necessary.
+---
 
-### Reloading the JAR file in Burp
+## Troubleshooting
 
-If you make changes to the code, you must rebuild the JAR file and reload your extension in Burp for the changes to take effect.
+* If the extension fails to load, verify you built the JAR successfully and that your Java version matches the Gradle toolchain settings.
+* If files are not being created, ensure the running Burp process has write permissions for the target folder.
+* Check output and errors in Burp's **Extensions** tab for any error messages or stack traces produced by the extension.
 
-To rebuild the JAR file, follow the steps for [building the JAR file](#building-the-jar-file).
+---
 
-To quickly reload your extension in Burp:
+## Contributing
 
-1. In Burp, go to **Extensions > Installed**.
-2. Hold `Ctrl` or `⌘`, and select the **Loaded** checkbox next to your extension.
+Contributions, bug reports and feature requests are welcome. Open an issue or submit a pull request with proposed changes.
 
+---
 
-## Sharing your extension
+## License
 
-Once you've built your extension, we'd love to see what you've created!
+Specify your preferred license here (e.g., MIT). If you don't want to include a license file in this repo, note the intended license in this section.
 
-Share your extension on our [PortSwigger Discord](https://discord.com/channels/1159124119074381945/1164175825474686996) #extensions channel to get feedback, showcase your work, and connect with other developers.
-Then take it to the next level by submitting your extension to the BApp store, making it available to the community of 80,000+ users worldwide.
+---
 
-For guidance on the submission process, see [Submitting extensions to the BApp store](https://portswigger.net/burp/documentation/desktop/extend-burp/extensions/creating/bapp-store-submitting-extensions).
+## Contact
+
+Created by Ojas Maheshwari. For questions or help, please open an issue on the repository.
